@@ -24,3 +24,10 @@
 	display: grid;
 	grid-template-columns: auto auto auto auto auto auto auto auto;
 }
+
+@media (max-width: 850px){
+	#game-window{
+		display: flex;
+		flex-direction: column;
+	}
+}
