@@ -1,0 +1,26 @@
+:root{
+	/* colors */
+	--light-coral: #FF7477;
+	--pastel-pink: #E69597;
+	--silver-pink: #CEB5B7;
+	--powder-blue: #B5D6D6;
+	--celeste: #9CF6F6;
+	--olive: #3D9970;
+	--text-black: #1F1F1F;
+
+	background-color: white;
+	font-family: "Noto Sans", sans-serif;
+	color: var(--text-black);
+	line-height: 2;
+}
+/* *{ border: dashed 1px black;} */
+#game-window{
+	display: flex;
+	flex-direction: row;
+}
+#pieces-container{
+}
+#chessboard{
+	display: grid;
+	grid-template-columns: auto auto auto auto auto auto auto auto;
+}

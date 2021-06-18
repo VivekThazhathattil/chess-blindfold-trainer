@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Blindfold Chess Trainer</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<link rel="stylesheet" href="styles.css" type="text/css" media="all" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script type="text/javascript" src="scripts.js"></script>
+	</head>
+	<body>
+		<header>
+			<h1>Blindfold Chess Trainer</h1>
+		</header>
+		<main>
+<!-- ****************************************************  -->
+			<div id="menu-window">
+				<h3>Main menu</h3>
+				<button id="new-game">New Game</button>
+				<button id="open-settings-window">Settings</button>
+			</div> <!-- menu-window -->
+<!-- ****************************************************  -->
+			<div id="settings-window">
+				<h3>Settings</h3>
+				<button class="exit-to-menu">Return to Menu</button>
+			</div> <!-- settings-window -->
+<!-- ****************************************************  -->
+			<div id="game-window">
+				<h3>Game Window</h3>
+				<button class="exit-to-menu">Return to Menu</button>
+				<button id="next-puzle">Next</button>
+				<div id="pieces-container">
+					<div id="white-pieces-container">
+					</div>
+					<div id="black-pieces-container">
+					</div>
+				</div>
+				<div id="chessboard">
+					<div id="square-prototype" class="square">
+					</div>
+				</div>
+			</div> <!-- game-window -->
+<!-- ****************************************************  -->
+		</main>
+		<footer>
+		</footer>
+	</body>
+</html>
