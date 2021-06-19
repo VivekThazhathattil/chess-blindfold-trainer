@@ -18,6 +18,7 @@
 	line-height: 2;
 }
 header{
+	font-family: "Niconne";
 	text-align: center;
 }
 a{
@@ -30,6 +31,7 @@ a{
 	justify-content: center;
 	align-items: center;
 	text-align: center;
+	font-family: "Niconne";
 	padding: 20px;
 }
 .menu-button{
@@ -54,7 +56,8 @@ a{
 #game-window{
 	display: flex;
 	flex-direction: row;
-	justify-content: flex-end;
+	justify-content: center;
+	text-align: center;
 }
 .overlay {
     z-index: 1;
@@ -72,13 +75,32 @@ a{
 .buttons{
 	display: flex;
 	flex-direction: row;
-	justify-content: center;
+	justify-content: space-evenly;
+}
+button{
+	background-color: transparent;
+	font-family: "Niconne";
+	color: white;
+	border: none;
+}
+button:hover{
+	transform: scale(1.2);
+}
+li {
+  float: left;
+	padding: 10px;
+	list-style-type:none;
+}
+.reduced-size{
+	width: 50px;
+	height: 50px;
 }
 #next-puzzle{
 	margin-left: 5px;
 }
-#exit-to-menu{
+.exit-to-menu{
 	margin-right: 5px;
+	background-color: transparent;
 }
 #pieces-container{
 	display: flex;
@@ -111,6 +133,10 @@ a{
 	#game-window{
 		display: flex;
 		flex-direction: column;
+	}
+	.reduced-size{
+		width: 25px;
+		height: 25px;
 	}
 	#pieces-container{
 		display: flex;

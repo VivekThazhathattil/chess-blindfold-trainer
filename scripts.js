@@ -157,8 +157,11 @@ function loadNextPuzzle(fen){
 		"padding-right": "10px",
 		"margin" : "10px",
 	});
-	$("#white-pieces-container").html("<h2>White:</h2><hr><h2>" + piecesArr[0].join("\n") + "</h2>");
-	$("#black-pieces-container").html("<h2>Black:</h2><hr><h2>" + piecesArr[1].join("\n") + "</h2>");
+
+	let whiteListString = '<ul><li>' + piecesArr[0].join("</li><li>") + "</li></ul>";
+	let blackListString = '<ul><li>' + piecesArr[1].join("</li><li>") + "</li></ul>";
+	$("#white-pieces-container").html("<h2>White:</h2><hr><h2>" + whiteListString + "</h2>");
+	$("#black-pieces-container").html("<h2>Black:</h2><hr><h2>" + blackListString + "</h2>");
 }
 
 function getFenArrFromCsv(){

@@ -4,33 +4,59 @@
 		<title>Blindfold Chess Trainer</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<link href="https://fonts.googleapis.com/css?family=Niconne" rel="stylesheet" type="text/css">
 		<link rel="stylesheet" href="styles.css" type="text/css" media="all" />
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script type="text/javascript" src="scripts.js"></script>
 	</head>
 	<body>
 		<header class="card round-edge">
-			<h1><a href="#"> BLINDFOLD CHESS TRAINER </a></h1>
+			<h1><a href="#"> Blindfold Chess Trainer</a></h1>
 		</header>
 		<main>
 <!-- ****************************************************  -->
 			<div id="menu-window">
-				<h2>Main menu</h2>
-				<button id="new-game" class="menu-button">New Game</button>
-				<button id="open-settings-window" class="menu-button">Settings</button>
+				<h1><b><u>Main Menu</u></b></h1>
+				<button id="new-game" class="menu-button"><h2>New Game</h2></button>
+				<button id="open-settings-window" class="menu-button"><h2>Settings<h2></button>
 			</div> <!-- menu-window -->
 <!-- ****************************************************  -->
 			<div id="settings-window">
 				<h2>Settings</h2>
-				<button class="exit-to-menu">Return to Menu</button>
+				<button class="exit-to-menu">
+					<img 
+						src="img/go-to-menu.svg" 
+						alt="go back icon"
+						class="reduced-size">
+					</img>
+				</button>
 			</div> <!-- settings-window -->
 <!-- ****************************************************  -->
 			<div id="game-window">
 				<div class="info-pane">
-					<h2>Game Window</h2>
+					<!-- <h2>Game Window</h2> -->
 					<div class="buttons">
-						<button class="exit-to-menu">Return to Menu</button>
-						<button id="next-puzzle">Next</button>
+						<button class="exit-to-menu">
+						<img 
+							src="img/go-to-menu.svg" 
+							alt="Go to main menu"
+							class="reduced-size">
+						</img>
+						</button>
+						<button id="next-puzzle">
+							<img 
+								src="img/next.svg" 
+								alt="Next puzzle"
+								class="reduced-size">
+							</img>
+						</button>
+						<button id="help-button">
+							<img 
+								src="img/help.svg" 
+								alt="Show help"
+								class="reduced-size">
+							</img>
+						</button>
 					</div>
 					<div id="pieces-container" class="card round-edge">
 						<div id="white-pieces-container" class="card round-edge">
