@@ -121,7 +121,6 @@ li {
 #chessboard{
 	display: grid;
 	margin: 10px;
-	padding: 20px;
 	--size: max(400px, min(50vw, 50vh));	
 	min-width: var(--size);
 	min-height: var(--size);
@@ -133,7 +132,6 @@ li {
 
 @media only screen and (max-width: 850px){
 	#chessboard{
-		padding: 5px;
 		--size: min(90vh, 90vw);	
 		width: var(--size);
 		height: var(--size);
