@@ -57,7 +57,7 @@ a{
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
-	text-align: center;
+	align-items: flex-start;
 }
 .overlay {
     z-index: 1;
@@ -70,7 +70,9 @@ a{
     background: rgba(0, 0, 0, 0.5);
 }
 .info-pane{
-	margin: auto;
+	display: flex;
+	width: 600px;
+	flex-direction: column;
 }
 .buttons{
 	display: flex;
@@ -105,18 +107,24 @@ li {
 #pieces-container{
 	display: flex;
 	flex-direction: row;
-	width: 500px;
+	width: auto;
 	margin: 10px;
 	justify-content: center;
-	align-items: center;
+	align-items: stretch;
+}
+.resizable {
+  display: inline-block;
+  resize: both;
+  overflow: hidden;
+  line-height: 0;
 }
 #chessboard{
 	display: grid;
 	margin: 10px;
 	padding: 20px;
-	--size: min(400px, 50vw, 50vh);	
-	width: var(--size);
-	height: var(--size);
+	--size: max(400px, min(50vw, 50vh));	
+	min-width: var(--size);
+	min-height: var(--size);
 	width: 400px;
 	height: 400px;
 	background-color: var(--overlay);
@@ -133,10 +141,17 @@ li {
 	#game-window{
 		display: flex;
 		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
 	}
 	.reduced-size{
 		width: 25px;
 		height: 25px;
+	}
+	.info-pane{
+		display: flex;
+		width: auto;
+		flex-direction: column;
 	}
 	#pieces-container{
 		display: flex;
@@ -144,6 +159,5 @@ li {
 		width: auto;
 		height: auto;
 		justify-content: center;
-		align-items: center;
 	}
 }

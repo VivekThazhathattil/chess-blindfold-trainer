@@ -44,24 +44,37 @@ function createChessBoard(){
 					"display": "flex"
 				})
 				.appendTo("#chessboard");	
+			/* a to h coordinates marking */
 			if(i == numRanks - 1){
-				$("#"+idStr).html("<b>"+files.charAt(j)+"</b");
+				$("#"+idStr).html("<p><b>"+files.charAt(j)+"</b></p>");
 				$("#"+idStr).css({
+					"display":"flex",
+					"flex-direction":"row",
 					"align-items":"flex-end",
 					"justify-content":"flex-start",
 					"color": colorNotPref,
 					"font-size": "12px",
-					"padding" : "-5px"
 				});
 			}
+			/* 1 to 8 coordinates marking */
 			else if(j == numFiles - 1){
-				$("#"+idStr).text(numFiles - i);
+				$("#"+idStr).html("<p><b>"+(numFiles-i).toString()+"</b></p>");
 				$("#"+idStr).css({
-					"align-items":"flex-start", 
+					"display":"flex",
+					"flex-direction":"row",
+					"align-items":"flex-end", 
 					"justify-content":"flex-end",
 					"color": colorNotPref,
 					"font-size": "12px",
-					"padding" : "2px"
+				});
+			}
+			if(i == numRanks - 1 && j == numRanks - 1){
+				$("#"+idStr).html(
+					"<p><b>" + files.charAt(j) + "</b></p>" +
+					"<p><b>" + (numFiles-i).toString() + "</b></p>"
+				);
+				$("#"+idStr).css({
+					"justify-content":"space-between",
 				});
 			}
 		}
@@ -174,6 +187,7 @@ function getAllFENs(){
 
 $(document).ready(() => {
 	showMenuWindow();
+	createChessBoard();
 	showPieceLocContainer();
 	let fenArr = getAllFENs();
 	let counter = 0;
@@ -182,7 +196,6 @@ $(document).ready(() => {
 	/* Button click events */
 	$("#new-game").click( () => {
 		showGameWindow();
-		createChessBoard();
 	});
 	$(".exit-to-menu").click( () =>{
 		resetSquareHighlights();
