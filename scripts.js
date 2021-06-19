@@ -24,8 +24,6 @@ function showGameWindow(){
 function createChessBoard(){
 	$('#chessboard').css({
 		"background-color": "black",
-		"width": "400px",
-		"height": "400px",
 		"margin": "auto"
 	});
 	const files = "abcdefgh";
@@ -68,6 +66,11 @@ function createChessBoard(){
 		}
 	}
 	$("#square-prototype").remove();
+	/* round the outer edges of the chess square at the corner of the chessboard */
+	$("#h8").css("border-top-right-radius","10px");
+	$("#a8").css("border-top-left-radius","10px");
+	$("#h1").css("border-bottom-right-radius","10px");
+	$("#a1").css("border-bottom-left-radius","10px");
 }
 
 function showPieceLocContainer(){
@@ -105,18 +108,19 @@ function getPieceLocFromFEN(fen){
 
 function iconify(letter){
 	switch(letter){
-		case 'r': return '♜';
-		case 'n': return '♞';
-		case 'b': return '♝';
-		case 'q': return '♛';
-		case 'k': return '♚';
-		case 'p': return '♟︎';
-		case 'R': return '♖';
-		case 'N': return '♘';
-		case 'B': return '♗'; 
-		case 'Q': return '♕';
-		case 'K': return '♔';
-		case 'P': return '♙';
+		case 'R': return '♜';
+		case 'N': return '♞';
+		case 'B': return '♝';
+		case 'Q': return '♛';
+		case 'K': return '♚';
+		case 'P': return '♟︎';
+
+		case 'r': return '♖';
+		case 'n': return '♘';
+		case 'b': return '♗'; 
+		case 'q': return '♕';
+		case 'k': return '♔';
+		case 'p': return '♙';
 	}
 	console.log("Error: Unrecognized letter");
 	return letter;
@@ -139,8 +143,21 @@ function updatePiecesArrToBoardCoords(obj){
 function loadNextPuzzle(fen){
 	let piecesObj = getPieceLocFromFEN(fen)
 	let piecesArr = updatePiecesArrToBoardCoords(piecesObj);
-	$("#white-pieces-container").html("<h2>White:</h2><h2>" + piecesArr[0].join(" ") + "</h2>");
-	$("#black-pieces-container").html("<h2>Black:</h2><h2>" + piecesArr[1].join(" ") + "</h2>");
+	$("#pieces-container").css({
+		"padding" : "10px",
+	});
+	$("#white-pieces-container").css({
+		"padding-left" : "10px",
+		"padding-right": "10px",
+		"margin" : "10px",
+	});
+	$("#black-pieces-container").css({
+		"padding-left": "10px",
+		"padding-right": "10px",
+		"margin" : "10px",
+	});
+	$("#white-pieces-container").html("<h2>White:</h2><hr><h2>" + piecesArr[0].join("\n") + "</h2>");
+	$("#black-pieces-container").html("<h2>Black:</h2><hr><h2>" + piecesArr[1].join("\n") + "</h2>");
 }
 
 function getFenArrFromCsv(){
