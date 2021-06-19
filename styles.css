@@ -131,7 +131,7 @@ li {
 	grid-template-columns: auto auto auto auto auto auto auto auto;
 }
 
-@media (max-width: 850px){
+@media only screen and (max-width: 850px){
 	#chessboard{
 		padding: 5px;
 		--size: min(90vh, 90vw);	
