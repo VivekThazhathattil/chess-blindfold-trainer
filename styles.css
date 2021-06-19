@@ -24,6 +24,17 @@ a{
 	text-decoration: none;
 	color: var(--text-white);
 }
+#menu-window{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	padding: 20px;
+}
+.menu-button{
+	margin: 10px;
+}
 .card {
   /* Add shadows to create the "card" effect */
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -43,7 +54,31 @@ a{
 #game-window{
 	display: flex;
 	flex-direction: row;
-	justify-content: space-around;
+	justify-content: flex-end;
+}
+.overlay {
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    overflow: auto;
+    top: 0px;
+    left: 0px;
+    background: rgba(0, 0, 0, 0.5);
+}
+.info-pane{
+	margin: auto;
+}
+.buttons{
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+#next-puzzle{
+	margin-left: 5px;
+}
+#exit-to-menu{
+	margin-right: 5px;
 }
 #pieces-container{
 	display: flex;
@@ -56,13 +91,23 @@ a{
 #chessboard{
 	display: grid;
 	margin: 10px;
+	padding: 20px;
+	--size: min(400px, 50vw, 50vh);	
+	width: var(--size);
+	height: var(--size);
 	width: 400px;
 	height: 400px;
-	border: solid 10px #242424;
+	background-color: var(--overlay);
 	grid-template-columns: auto auto auto auto auto auto auto auto;
 }
 
 @media (max-width: 850px){
+	#chessboard{
+		padding: 5px;
+		--size: min(90vh, 90vw);	
+		width: var(--size);
+		height: var(--size);
+	}
 	#game-window{
 		display: flex;
 		flex-direction: column;
@@ -72,7 +117,6 @@ a{
 		flex-direction: column;
 		width: auto;
 		height: auto;
-		margin: 10px;
 		justify-content: center;
 		align-items: center;
 	}
