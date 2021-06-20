@@ -5001,6 +5001,7 @@ puzzles = [{ fen: "2rq3r/4bk1p/p2p1p1B/1b1P2pP/3Q4/4R3/PP3P1P/4R1K1 b - - 3 22",
 ];
 let showPiecesInChessBoardFlag = false;
 let markedSquares = [];
+let solutionMoves = [];
 function hideAll(){
 	$("#menu-window").hide();
 	$("#game-window").hide();
@@ -5059,18 +5060,22 @@ function preparePiecesInChessBoard(arr){
 				"width": pieceWidth,
 				"height": pieceWidth,
 			});
+			$('#'+arr[i][j].slice(1,3)+'-piece').addClass("fade-in");
 		}
 	}
 	hidePiecesInChessBoard();
 }
 
 function showPiecesInChessBoard(){
+	$("#solution-moves").show();
 	$("#chessboard").children().children().show();
 }
 function hidePiecesInChessBoard(){
+	$("#solution-moves").hide();
 	$("#chessboard").children().children().hide();
 }
-function removeSolution(){
+function removePiecesInChessBoard(){
+	$("#solution-moves").hide();
 	$("#chessboard").children().children().remove();
 }
 
@@ -5215,6 +5220,8 @@ function getWhoseMove(fen){
 function loadNextPuzzle(puzzle){
 	let piecesObj = getPieceLocFromFEN(puzzle.fen);
 	let whoseMove = getWhoseMove(puzzle.fen);
+	solutionMoves = puzzle.solution.split(' ');
+	$("#solution-moves").html("<h2> Solution:</h2><hr><ul><li>" + solutionMoves.join('</li><li>') + "</li></ul>");
 	let piecesArr = updatePiecesArrToBoardCoords(piecesObj);
 	$("#pieces-container").css({
 		"padding" : "10px",
@@ -5245,6 +5252,7 @@ function loadNextPuzzle(puzzle){
 	}
 
 	preparePiecesInChessBoard(piecesArr);
+	hidePiecesInChessBoard();
 }
 
 function getPuzzlesFromFile(){
@@ -5276,6 +5284,14 @@ $(document).on("click", ".square", function(event){
 			//console.log("hello " + squareId);
 });
 
+function exitToMenu(){
+	resetSquareHighlights();
+	hidePiecesInChessBoard();
+	removePiecesInChessBoard();
+	showPiecesInChessBoardFlag = false;
+	showMenuWindow();
+}
+
 $(document).ready(() => {
 	showMenuWindow();
 	createChessBoard();
@@ -5283,6 +5299,7 @@ $(document).ready(() => {
 	puzzles.sort((a,b)=>{return (a.fen.length < b.fen.length) ? -1 : a.fen.length == b.fen.length ? 0 : 1});
 	let puzzleArr = getAllPuzzles();
 	let counter = 0;
+	//let counter = Math.floor(Math.random()*puzzles.length);
 	loadNextPuzzle(puzzleArr[counter]);
 	
 	/* Button click events */
@@ -5291,7 +5308,8 @@ $(document).ready(() => {
 	});
 	$(".exit-to-menu").click( () =>{
 		resetSquareHighlights();
-		removeSolution();
+		hidePiecesInChessBoard();
+		removePiecesInChessBoard();
 		showPiecesInChessBoardFlag = false;
 		showMenuWindow();
 	});
@@ -5304,7 +5322,8 @@ $(document).ready(() => {
 		counter++;
 		if(counter > puzzleArr.length - 1)
 			counter = 0;
-		removeSolution();
+		hidePiecesInChessBoard();
+		removePiecesInChessBoard();
 		showPiecesInChessBoardFlag = false;
 		loadNextPuzzle(puzzleArr[counter]);
 	});

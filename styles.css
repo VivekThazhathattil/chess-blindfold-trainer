@@ -19,6 +19,17 @@
 	color: var(--text-white);
 	line-height: 2;
 }
+.fade-in{
+	animation: fadeIn 1s;
+	-webkit-animation: fadeIn 1s;
+	-moz-animation: fadeIn 1s;
+	-o-animation: fadeIn 1s;
+	-ms-animation: fadeIn 1s;
+}
+@keyframes fadeIn{
+	0% {opacity: 0;}
+	100% {opacity: 1;}
+}
 header{
 	font-family: "Niconne";
 	text-align: center;
@@ -76,6 +87,7 @@ a{
 	display: flex;
 	width: 600px;
 	flex-direction: column;
+	align-items: stretch;
 }
 .buttons{
 	display: flex;
@@ -115,6 +127,9 @@ li {
 	justify-content: center;
 	align-items: stretch;
 }
+#solution-moves{
+	margin: 10px;
+}
 .resizable {
   display: inline-block;
   resize: both;
@@ -136,6 +151,7 @@ li {
 @media only screen and (max-width: 850px){
 	#chessboard{
 		--size: min(90vh, 90vw);	
+		order: -3;
 		width: var(--size);
 		height: var(--size);
 	}
@@ -146,16 +162,17 @@ li {
 		align-items: center;
 	}
 	.reduced-size{
-		width: 25px;
-		height: 25px;
+		width: 50px;
+		height: 50px;
 	}
 	.info-pane{
 		display: flex;
-		width: auto;
+		width: 100%;
 		flex-direction: column;
+		align-items: stretch;
 	}
 	.buttons{
-		order: -1;
+		order: -2;
 		margin: 10px;
 	}
 	#pieces-container{
@@ -164,5 +181,9 @@ li {
 		width: auto;
 		height: auto;
 		justify-content: center;
+	}
+	#solution-moves{
+		order: -1;
+		margin: 10px;
 	}
 }

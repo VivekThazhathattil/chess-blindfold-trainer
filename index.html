@@ -10,15 +10,15 @@
 		<script type="text/javascript" src="scripts.js"></script>
 	</head>
 	<body>
-		<header class="card round-edge">
+		<header class="card round-edge" onclick="exitToMenu()">
 			<h1><a href="#"> Blindfold Chess Trainer</a></h1>
 		</header>
 		<main>
 <!-- ****************************************************  -->
 			<div id="menu-window">
-				<h1><b><u>Main Menu</u></b></h1>
-				<button id="new-game" class="menu-button"><h2>New Game</h2></button>
-				<button id="open-settings-window" class="menu-button"><h2>Settings<h2></button>
+				<h1 class=""><b><u>Main Menu</u></b></h1>
+				<button id="new-game" class="menu-button card round-edge"><h2>New Game</h2></button>
+				<button id="open-settings-window" class="menu-button card round-edge"><h2>Settings<h2></button>
 			</div> <!-- menu-window -->
 <!-- ****************************************************  -->
 			<div id="settings-window">
@@ -71,6 +71,8 @@
 						<div id="black-pieces-container" class="card round-edge">
 						</div>
 					</div> <!-- pieces-container-->
+					<div id="solution-moves" class="card round-edge fade-in">
+					</div> <!-- solution-moves -->
 				</div> <!-- info-pane -->
 				<div id="secondary-container" class="round-edge card">
 					<div id="chessboard" class="resizable card round-edge">
