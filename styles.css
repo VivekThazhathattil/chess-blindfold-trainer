@@ -10,9 +10,11 @@
 
 	--text-white: #FAFAFA;
 	--bg-black: #212121;
-	--overlay: rgba(255, 255, 255, 0.01);
+/*	--overlay: rgba(255, 255, 255, 0.01); */
+	--overlay: #1F1F1F;
 
 	background-color: var(--bg-black);
+	background-image: url(img/bg.svg);
 	font-family: "Noto Sans", sans-serif;
 	color: var(--text-white);
 	line-height: 2;
@@ -20,6 +22,7 @@
 header{
 	font-family: "Niconne";
 	text-align: center;
+	background-color: var(--bg-black);
 }
 a{
 	text-decoration: none;
