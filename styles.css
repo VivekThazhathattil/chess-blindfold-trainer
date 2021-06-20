@@ -30,6 +30,19 @@
 	0% {opacity: 0;}
 	100% {opacity: 1;}
 }
+.fade-in-out-fast{
+	animation: fadeInOutFast 1s;
+	-webkit-animation: fadeInOutFast 1s;
+	-moz-animation: fadeInOutFast 1s;
+	-o-animation: fadeInOutFast 1s;
+	-ms-animation: fadeInOutFast 1s;
+	animation-fill-mode: forwards;
+}
+@keyframes fadeInOutFast{
+	0% {opacity: 0;}
+	50% {opacity: 1;}
+	100% {opacity: 0;}
+}
 header{
 	font-family: "Niconne";
 	text-align: center;
@@ -124,7 +137,7 @@ li {
 	flex-direction: row;
 	width: auto;
 	margin: 10px;
-	justify-content: center;
+	justify-content: space-around;
 	align-items: stretch;
 }
 #solution-moves{
@@ -135,6 +148,18 @@ li {
   resize: both;
   overflow: hidden;
   line-height: 0;
+}
+#secondary-container{
+	position: relative;
+}
+.temp-img-overlay{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.temp-img{
+	max-width: min(50vw,50vh);
+	max-height: min(50vw,50vh);
 }
 #chessboard{
 	display: grid;

@@ -5002,6 +5002,7 @@ puzzles = [{ fen: "2rq3r/4bk1p/p2p1p1B/1b1P2pP/3Q4/4R3/PP3P1P/4R1K1 b - - 3 22",
 let showPiecesInChessBoardFlag = false;
 let markedSquares = [];
 let solutionMoves = [];
+let madeMoveCounter = 0;
 function hideAll(){
 	$("#menu-window").hide();
 	$("#game-window").hide();
@@ -5067,11 +5068,11 @@ function preparePiecesInChessBoard(arr){
 }
 
 function showPiecesInChessBoard(){
+	$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves.join("</li><li>") + "</li></ul>");
 	$("#solution-moves").show();
 	$("#chessboard").children().children().show();
 }
 function hidePiecesInChessBoard(){
-	$("#solution-moves").hide();
 	$("#chessboard").children().children().hide();
 }
 function removePiecesInChessBoard(){
@@ -5207,9 +5208,9 @@ function updatePiecesArrToBoardCoords(obj){
 
 function getWhoseMove(fen){
 	regex  = /\s[wb]\s/;
-	if(fen.match(regex) == ' w ')
+	if(fen.match(regex) == ' b ')
 		return 'White';
-	else if(fen.match(regex) == ' b ')
+	else if(fen.match(regex) == ' w ')
 		return 'Black';
 	else{
 		console.log('Unrecognized whoseMove in getWhoseMove');
@@ -5218,10 +5219,9 @@ function getWhoseMove(fen){
 }
 
 function loadNextPuzzle(puzzle){
+	madeMoveCounter = 0;
 	let piecesObj = getPieceLocFromFEN(puzzle.fen);
 	let whoseMove = getWhoseMove(puzzle.fen);
-	solutionMoves = puzzle.solution.split(' ');
-	$("#solution-moves").html("<h2> Solution:</h2><hr><ul><li>" + solutionMoves.join('</li><li>') + "</li></ul>");
 	let piecesArr = updatePiecesArrToBoardCoords(piecesObj);
 	$("#pieces-container").css({
 		"padding" : "10px",
@@ -5253,6 +5253,9 @@ function loadNextPuzzle(puzzle){
 
 	preparePiecesInChessBoard(piecesArr);
 	hidePiecesInChessBoard();
+	solutionMoves = puzzle.solution.split(' ');
+	$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves[0] + "</li></ul>");
+	$("#solution-moves").show();
 }
 
 function getPuzzlesFromFile(){
@@ -5268,19 +5271,52 @@ function resetSquareHighlights(){
 		$('#' + markedSquares[i]).css("filter","hue-rotate(0deg)");
 	markedSquares = [];
 }
+
+function checkMoveCorrect(){
+	return (markedSquares[0] === solutionMoves[madeMoveCounter*2 + 1].slice(0,2) && 
+		markedSquares[1] === solutionMoves[madeMoveCounter*2 + 1].slice(2,4));
+}
+function displaySuccessOrFailure(flag){
+	if(flag)
+		$(".temp-img-overlay").html('<img src="img/yes.svg" class="temp-img fade-in-out-fast" alt="correct answer">');
+	else
+		$(".temp-img-overlay").html('<img src="img/no.svg" class="temp-img fade-in-out-fast" alt="wrong answer">');
+	$(".temp-img-overlay").css({
+		"margin":"auto",
+		"pointer-events":"none",
+	});
+	console.log(madeMoveCounter*2, solutionMoves.length);
+	if(madeMoveCounter*2 == solutionMoves.length)
+		showPiecesInChessBoard();
+}
+function updateSolutionMoveList(){
+	$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves.slice(0,madeMoveCounter*2+1).join('</li><li>') + "</li></ul>");
+	$("#solution-moves").show();
+}
 /* mark square upon clicking squares function */
 $(document).on("click", ".square", function(event){
-			if(markedSquares.length >= 2){
-				resetSquareHighlights();
-			}
-			let squareId = event.target.id;
-			// if square already marked, unmark it
-			if(squareId == markedSquares[0])
-				resetSquareHighlights();	
-			else{
-				markedSquares.push(squareId);
-				$("#"+squareId).css("filter","hue-rotate(45deg)");
-			}
+		if(!showPiecesInChessBoardFlag && madeMoveCounter*2 != solutionMoves.length){
+				if(markedSquares.length >= 2){
+					resetSquareHighlights();
+				}
+				let squareId = event.target.id;
+				// if square already marked, unmark it
+				if(squareId == markedSquares[0])
+					resetSquareHighlights();	
+				else{
+					markedSquares.push(squareId);
+					$("#"+squareId).css("filter","hue-rotate(45deg)");
+					
+					if(markedSquares.length == 2){
+						let moveCorrect = checkMoveCorrect();
+						if(moveCorrect){
+							madeMoveCounter++;
+							updateSolutionMoveList();
+						}
+						displaySuccessOrFailure(moveCorrect);
+					}
+				}
+		}
 			//console.log("hello " + squareId);
 });
 
