@@ -5003,6 +5003,7 @@ let showPiecesInChessBoardFlag = false;
 let markedSquares = [];
 let solutionMoves = [];
 let madeMoveCounter = 0;
+let colors = ["#F0D9B5", "#B58863"]; // in the order [white, black]
 function hideAll(){
 	$("#menu-window").hide();
 	$("#game-window").hide();
@@ -5088,7 +5089,6 @@ function createChessBoard(){
 	const files = "abcdefgh";
 	const numFiles = 8;
 	const numRanks = 8;
-	const colors = ["#F0D9B5", "#B58863"]; // in the order [white, black]
 	for(let i = 0; i < numRanks; i++){
 		for(let j = 0; j < numFiles; j++){
 			let idStr = files.charAt(j)+(numFiles - i).toString();
@@ -5334,15 +5334,31 @@ function exitToMenu(){
 	showMenuWindow();
 }
 
+function hideHelpPopUp(){
+	$("#help-popup").hide();
+}
+
 $(document).ready(() => {
 	showMenuWindow();
 	createChessBoard();
 	showPieceLocContainer();
 	puzzles.sort((a,b)=>{return (a.fen.length < b.fen.length) ? -1 : a.fen.length == b.fen.length ? 0 : 1});
+	hideHelpPopUp();
 	let puzzleArr = getAllPuzzles();
 	let counter = 0;
 	//let counter = Math.floor(Math.random()*puzzles.length);
 	
+	/* settings color picker color change events handle */
+	$("#colorpicker1").change( ()=>{
+		//console.log($("#colorpicker1")['0'].value);
+		colors[0] = $("#colorpicker1")['0'].value;
+	});
+
+	$("#colorpicker2").change( ()=>{
+		colors[1] = $("#colorpicker1")['0'].value;
+	});
+
+
 	/* Button click events */
 	$("#new-game").click( () => {
 		showGameWindow();
@@ -5373,6 +5389,15 @@ $(document).ready(() => {
 			showPiecesInChessBoard();
 		else
 			hidePiecesInChessBoard();
+	});
+	$("#help-button").click( ()=>{
+		if( $("#help-popup").is(":hidden") )
+			$("#help-popup").show();
+		else
+			$("#help-popup").hide();
+	});
+	$("#help-popup").click( ()=>{
+			$("#help-popup").hide();
 	});
 
 });

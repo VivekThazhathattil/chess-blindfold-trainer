@@ -61,6 +61,18 @@ a{
 	font-family: "Niconne";
 	padding: 20px;
 }
+#settings-window{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	font-family: "Niconne";
+	padding: 20px;
+}
+.custom-padding{
+	padding: 20px;
+}
 .menu-button{
 	margin: 10px;
 }
@@ -115,6 +127,15 @@ button{
 }
 button:hover{
 	transform: scale(1.2);
+}
+#help-popup{
+	z-index: 10;
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	top: min(10vw,10vh);
+	left: min(10vw,10vh);
+	width: min(80vw,80vh);
 }
 li {
   float: left;
