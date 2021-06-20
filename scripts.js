@@ -5068,6 +5068,7 @@ function preparePiecesInChessBoard(arr){
 }
 
 function showPiecesInChessBoard(){
+	showPiecesInChessBoardFlag = true;
 	$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves.join("</li><li>") + "</li></ul>");
 	$("#solution-moves").show();
 	$("#chessboard").children().children().show();
@@ -5285,9 +5286,10 @@ function displaySuccessOrFailure(flag){
 		"margin":"auto",
 		"pointer-events":"none",
 	});
-	console.log(madeMoveCounter*2, solutionMoves.length);
-	if(madeMoveCounter*2 == solutionMoves.length)
+	//console.log(madeMoveCounter*2, solutionMoves.length);
+	if(madeMoveCounter*2 == solutionMoves.length){
 		showPiecesInChessBoard();
+	}
 }
 function updateSolutionMoveList(){
 	$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves.slice(0,madeMoveCounter*2+1).join('</li><li>') + "</li></ul>");
@@ -5295,7 +5297,7 @@ function updateSolutionMoveList(){
 }
 /* mark square upon clicking squares function */
 $(document).on("click", ".square", function(event){
-		if(!showPiecesInChessBoardFlag && madeMoveCounter*2 != solutionMoves.length){
+		if(!showPiecesInChessBoardFlag && (madeMoveCounter*2 != solutionMoves.length)){
 				if(markedSquares.length >= 2){
 					resetSquareHighlights();
 				}
@@ -5319,12 +5321,16 @@ $(document).on("click", ".square", function(event){
 		}
 			//console.log("hello " + squareId);
 });
-
+function resetGlobalVars(){
+//	showPiecesInChessBoardFlag = false;
+//	markedSquares = [];
+//	madeMoveCounter = 0;
+}
 function exitToMenu(){
 	resetSquareHighlights();
+	resetGlobalVars();
 	hidePiecesInChessBoard();
 	removePiecesInChessBoard();
-	showPiecesInChessBoardFlag = false;
 	showMenuWindow();
 }
 
@@ -5336,18 +5342,16 @@ $(document).ready(() => {
 	let puzzleArr = getAllPuzzles();
 	let counter = 0;
 	//let counter = Math.floor(Math.random()*puzzles.length);
-	loadNextPuzzle(puzzleArr[counter]);
 	
 	/* Button click events */
 	$("#new-game").click( () => {
 		showGameWindow();
+		$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves[0] + "</li></ul>");
+		$("#solution-moves").show();
+		loadNextPuzzle(puzzleArr[counter]);
 	});
 	$(".exit-to-menu").click( () =>{
-		resetSquareHighlights();
-		hidePiecesInChessBoard();
-		removePiecesInChessBoard();
-		showPiecesInChessBoardFlag = false;
-		showMenuWindow();
+		exitToMenu();
 	});
 	$("#open-settings-window").click( () =>{
 		showSettingsWindow();

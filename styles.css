@@ -208,7 +208,7 @@ li {
 		justify-content: center;
 	}
 	#solution-moves{
-		order: -1;
+		order: +1;
 		margin: 10px;
 	}
 }
