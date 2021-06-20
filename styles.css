@@ -138,7 +138,7 @@ li {
 	}
 	#game-window{
 		display: flex;
-		flex-direction: column;
+		flex-direction: column-reverse;
 		justify-content: flex-start;
 		align-items: center;
 	}
@@ -150,6 +150,10 @@ li {
 		display: flex;
 		width: auto;
 		flex-direction: column;
+	}
+	.buttons{
+		order: -1;
+		margin: 10px;
 	}
 	#pieces-container{
 		display: flex;
