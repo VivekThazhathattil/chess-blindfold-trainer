@@ -123,6 +123,9 @@ a{
 	flex-direction: row;
 	justify-content: space-evenly;
 }
+.buttons:focus{
+	outline: none;
+}
 button{
 	background-color: transparent;
 	font-family: "Niconne";
