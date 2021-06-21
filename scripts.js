@@ -5337,7 +5337,27 @@ function exitToMenu(){
 function hideHelpPopUp(){
 	$("#help-popup").hide();
 }
-
+function getCounterFromLocalStorage(){
+	if (typeof(Storage) !== "undefined") {
+		let val = localStorage.getItem("counter");
+		if(isNaN(val))
+			return Math.floor(Math.random()*100);
+		else{
+			if (val != null)
+				return val;
+		}
+	} 
+	else
+		console.log("Local storage not supported");
+	return Math.floor(Math.random()*100);
+}
+function setCounterToLocalStorage(counter){
+	if (typeof(Storage) !== "undefined") {
+			localStorage.setItem("counter",counter);
+	}
+	else
+		console.log("Local storage not supported");
+}
 $(document).ready(() => {
 	showMenuWindow();
 	createChessBoard();
@@ -5345,8 +5365,9 @@ $(document).ready(() => {
 	puzzles.sort((a,b)=>{return (a.fen.length < b.fen.length) ? -1 : a.fen.length == b.fen.length ? 0 : 1});
 	hideHelpPopUp();
 	let puzzleArr = getAllPuzzles();
-	let counter = 0;
-	//let counter = Math.floor(Math.random()*puzzles.length);
+	//let counter = 0;
+	let counter = getCounterFromLocalStorage();
+	console.log("counter = ",counter);
 	
 	/* settings color picker color change events handle */
 	$("#colorpicker1").change( ()=>{
@@ -5378,6 +5399,8 @@ $(document).ready(() => {
 		counter++;
 		if(counter > puzzleArr.length - 1)
 			counter = 0;
+		console.log("counter = ",counter);
+		setCounterToLocalStorage(counter);
 		hidePiecesInChessBoard();
 		removePiecesInChessBoard();
 		showPiecesInChessBoardFlag = false;

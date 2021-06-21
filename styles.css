@@ -19,6 +19,10 @@
 	color: var(--text-white);
 	line-height: 2;
 }
+.rotateX-3d{
+	transform: rotateX(360deg);
+	transition: 1s;
+}
 .fade-in{
 	animation: fadeIn 1s;
 	-webkit-animation: fadeIn 1s;
