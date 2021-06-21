@@ -5341,7 +5341,8 @@ function getCounterFromLocalStorage(){
 	if (typeof(Storage) !== "undefined") {
 		let val = localStorage.getItem("counter");
 		if(isNaN(val))
-			return Math.floor(Math.random()*100);
+//			return Math.floor(Math.random()*100);
+			return 0;
 		else{
 			if (val != null)
 				return val;
@@ -5349,7 +5350,8 @@ function getCounterFromLocalStorage(){
 	} 
 	else
 		console.log("Local storage not supported");
-	return Math.floor(Math.random()*100);
+//	return Math.floor(Math.random()*100);
+	return 0;
 }
 function setCounterToLocalStorage(counter){
 	if (typeof(Storage) !== "undefined") {
