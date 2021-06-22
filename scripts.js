@@ -5104,7 +5104,6 @@ function createChessBoard(){
 					"align-items":"center",
 					"justify-content":"center",
 					"background-color": colorPref,
-					"display": "flex",
 					"min-width": $("#chessboard").innerWidth()/8,
 					"min-height": $("#chessboard").innerWidth()/8,
 					"color": colorNotPref,
