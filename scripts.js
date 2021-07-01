@@ -1,3 +1,422 @@
+let showPiecesInChessBoardFlag = false;
+let markedSquares = [];
+let solutionMoves = [];
+let madeMoveCounter = 0;
+let colors = ["#F0D9B5", "#B58863"]; // in the order [white, black]
+function hideAll(){
+	$("#menu-window").hide();
+	$("#game-window").hide();
+	$("#settings-window").hide();
+}
+
+function showMenuWindow(){
+	hideAll();
+	$("#menu-window").show();
+}
+
+function showSettingsWindow(){
+	hideAll();
+	$("#settings-window").show();
+}
+
+function showGameWindow(){
+	hideAll();
+	$("#game-window").show();
+}
+
+function deiconify(icon){
+	switch(icon){
+		case '♜':	return 'R'; 
+		case '♞':	return 'N';
+		case '♝':	return 'B';
+		case '♛':	return 'Q';
+		case '♚':	return 'K';
+		case '♟':	return 'P';
+		case '♖': return 'r';
+		case '♘': return 'n';
+		case '♗': return 'b'; 
+		case '♕': return 'q';
+		case '♔': return 'k';
+		case '♙': return 'p';
+	}
+	console.log("Error: Unrecognized icon " + icon);
+	return icon;
+}
+
+function preparePiecesInChessBoard(arr){
+	for(let i = 0; i < arr.length; i++){
+		for(let j = 0; j < arr[i].length; j++){
+			let filePathStr = "img/pieces/";
+			if((/^[A-Z]/).test(deiconify(arr[i][j].charAt(0))))
+				filePathStr += 'w';	
+			else
+				filePathStr += 'b';
+			filePathStr += deiconify(arr[i][j].charAt(0)).toLowerCase() + ".svg";
+			let imgStr = '<img src=' + filePathStr + ' alt=""' + ' id=' + arr[i][j].slice(1) + '-piece></img>';
+			//console.log(imgStr);
+			let pieceWidth = $("#chessboard").innerWidth()/10;
+			$('#'+arr[i][j].slice(1,3)).append(imgStr);
+			$('#'+arr[i][j].slice(1,3)+'-piece').css({
+				"display":"relative",
+				"width": pieceWidth,
+				"height": pieceWidth,
+			});
+			$('#'+arr[i][j].slice(1,3)+'-piece').addClass("fade-in");
+		}
+	}
+	hidePiecesInChessBoard();
+}
+
+function showPiecesInChessBoard(){
+	showPiecesInChessBoardFlag = true;
+	$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves.join("</li><li>") + "</li></ul>");
+	$("#solution-moves").show();
+	$("#chessboard").children().children().show();
+}
+function hidePiecesInChessBoard(){
+	$("#chessboard").children().children().hide();
+}
+function removePiecesInChessBoard(){
+	$("#solution-moves").hide();
+	$("#chessboard").children().children().remove();
+}
+
+function createChessBoard(){
+	$(".square").remove();
+	$('#chessboard').css({
+		"margin": "auto"
+	});
+	const files = "abcdefgh";
+	const numFiles = 8;
+	const numRanks = 8;
+	$("#chessboard").append('<div id="square-prototype" class="square"></div>');
+	for(let i = 0; i < numRanks; i++){
+		for(let j = 0; j < numFiles; j++){
+			let idStr = files.charAt(j)+(numFiles - i).toString();
+			let colorPref = (i+j)%2 == 0 ? colors[0] : colors[1];
+			let colorNotPref = (i+j)%2 == 0 ? colors[1] : colors[0];
+			$("#square-prototype")
+				.clone()
+				.attr("id", idStr)
+				.attr("class", "square")
+				.css({
+					"display":"flex",
+					"flex-direction":"row",
+					"align-items":"center",
+					"justify-content":"center",
+					"background-color": colorPref,
+					"min-width": $("#chessboard").innerWidth()/8,
+					"min-height": $("#chessboard").innerWidth()/8,
+					"color": colorNotPref,
+					"font-size": "12px",
+				})
+				.appendTo("#chessboard");	
+		}
+	}
+	$("#square-prototype").remove();
+	/* round the outer edges of the chess square at the corner of the chessboard */
+	$("#h8").css("border-top-right-radius","10px");
+	$("#a8").css("border-top-left-radius","10px");
+	$("#h1").css("border-bottom-right-radius","10px");
+	$("#a1").css("border-bottom-left-radius","10px");
+}
+
+function showPieceLocContainer(){
+}
+
+function getPieceLocFromFEN(fen){
+	let locObj = {
+		white: [],
+		black: []
+	};
+
+	const mainField = fen.split(' ')[0];
+	const ranks = mainField.split('/');
+	const lowP = "rnbqkp";
+	const highP = lowP.toUpperCase();
+
+	for(let rankIdx = 8; rankIdx >= 1; rankIdx--){
+		let ranksArr = ranks[8-rankIdx].split('');
+		let fileIdx = 1;
+		for(let ranksArrIdx = 0; ranksArrIdx < ranksArr.length; ranksArrIdx++){
+			if(lowP.indexOf(ranksArr[ranksArrIdx]) >= 0){
+				locObj.black.push([fileIdx, rankIdx, ranksArr[ranksArrIdx]]);
+				fileIdx++;
+			}
+			else if(highP.indexOf(ranksArr[ranksArrIdx]) >= 0){
+				locObj.white.push([fileIdx, rankIdx, ranksArr[ranksArrIdx]]);
+				fileIdx++;
+			}
+			else
+				fileIdx += parseInt(ranksArr[ranksArrIdx]);
+		}
+	}
+	//console.log(locObj);
+	return locObj;
+}
+
+function iconify(letter){
+	switch(letter){
+		case 'R': return '♜';
+		case 'N': return '♞';
+		case 'B': return '♝';
+		case 'Q': return '♛';
+		case 'K': return '♚';
+		case 'P': return '♟';
+		case 'r': return '♖';
+		case 'n': return '♘';
+		case 'b': return '♗'; 
+		case 'q': return '♕';
+		case 'k': return '♔';
+		case 'p': return '♙';
+	}
+	console.log("Error: Unrecognized letter");
+	return letter;
+}
+
+function updatePiecesArrToBoardCoords(obj){
+	const coordMap = "abcdefgh";
+	let newArr = [ [], [] ];
+	const wLen = obj.white.length;
+	const bLen = obj.black.length;
+	for(let i = 0; i < wLen; i++){
+		let removedIdx = obj.white.shift();
+		newArr[0].push("" + iconify(removedIdx[2]) + coordMap.charAt(removedIdx[0]-1) + removedIdx[1]);
+	}
+	for(let i = 0; i < bLen; i++){
+		let removedIdx = obj.black.shift();
+		newArr[1].push("" + iconify(removedIdx[2]) + coordMap.charAt(removedIdx[0]-1) + removedIdx[1]);
+	}
+	return newArr;
+}
+
+function getWhoseMove(fen){
+	regex  = /\s[wb]\s/;
+	if(fen.match(regex) == ' b ')
+		return 'White';
+	else if(fen.match(regex) == ' w ')
+		return 'Black';
+	else{
+		console.log('Unrecognized whoseMove in getWhoseMove');
+		return '';
+	}
+}
+
+function loadNextPuzzle(puzzle){
+	madeMoveCounter = 0;
+	let piecesObj = getPieceLocFromFEN(puzzle.fen);
+	let whoseMove = getWhoseMove(puzzle.fen);
+	let piecesArr = updatePiecesArrToBoardCoords(piecesObj);
+	$("#pieces-container").css({
+		"padding" : "10px",
+	});
+	$("#white-pieces-container").css({
+		"padding-left" : "10px",
+		"padding-right": "10px",
+		"margin" : "10px",
+	});
+	$("#black-pieces-container").css({
+		"padding-left": "10px",
+		"padding-right": "10px",
+		"margin" : "10px",
+	});
+	let whiteListString = '<ul><li>' + piecesArr[0].join("</li><li>") + "</li></ul>";
+	let blackListString = '<ul><li>' + piecesArr[1].join("</li><li>") + "</li></ul>";
+	if(whoseMove == "White"){
+		$("#white-pieces-container").html("<h2>White (to move):</h2><hr><h2>" + whiteListString + "</h2>");
+		$("#black-pieces-container").html("<h2>Black:</h2><hr><h2>" + blackListString + "</h2>");
+	}
+	else if (whoseMove == "Black"){
+		$("#white-pieces-container").html("<h2>White:</h2><hr><h2>" + whiteListString + "</h2>");
+		$("#black-pieces-container").html("<h2>Black (to move):</h2><hr><h2>" + blackListString + "</h2>");
+	}
+	else{
+		$("#white-pieces-container").html("<h2>White:</h2><hr><h2>" + whiteListString + "</h2>");
+		$("#black-pieces-container").html("<h2>Black:</h2><hr><h2>" + blackListString + "</h2>");
+	}
+
+	preparePiecesInChessBoard(piecesArr);
+	hidePiecesInChessBoard();
+	solutionMoves = puzzle.solution.split(' ');
+	$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves[0] + "</li></ul>");
+	$("#solution-moves").show();
+}
+
+function getPuzzlesFromFile(){
+	return puzzles;
+}
+function getAllPuzzles(){
+	return getPuzzlesFromFile();
+}
+
+function resetSquareHighlights(){
+	//console.log(markedSquares);
+	for(let i = 0; i < markedSquares.length; i++)
+		$('#' + markedSquares[i]).css("filter","hue-rotate(0deg)");
+	markedSquares = [];
+}
+
+function checkMoveCorrect(){
+	return (markedSquares[0] === solutionMoves[madeMoveCounter*2 + 1].slice(0,2) && 
+		markedSquares[1] === solutionMoves[madeMoveCounter*2 + 1].slice(2,4));
+}
+function displaySuccessOrFailure(flag){
+	if(flag)
+		$(".temp-img-overlay").html('<img src="img/yes.svg" class="temp-img fade-in-out-fast" alt="correct answer">');
+	else
+		$(".temp-img-overlay").html('<img src="img/no.svg" class="temp-img fade-in-out-fast" alt="wrong answer">');
+	$(".temp-img-overlay").css({
+		"margin":"auto",
+		"pointer-events":"none",
+	});
+	//console.log(madeMoveCounter*2, solutionMoves.length);
+	if(madeMoveCounter*2 == solutionMoves.length){
+		showPiecesInChessBoard();
+	}
+}
+function updateSolutionMoveList(){
+	$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves.slice(0,madeMoveCounter*2+1).join('</li><li>') + "</li></ul>");
+	$("#solution-moves").show();
+}
+/* mark square upon clicking squares function */
+$(document).on("click", ".square", function(event){
+		if(!showPiecesInChessBoardFlag && (madeMoveCounter*2 != solutionMoves.length)){
+				if(markedSquares.length >= 2){
+					resetSquareHighlights();
+				}
+				let squareId = event.target.id;
+				// if square already marked, unmark it
+				if(squareId == markedSquares[0])
+					resetSquareHighlights();	
+				else{
+					markedSquares.push(squareId);
+					$("#"+squareId).css("filter","hue-rotate(45deg)");
+					
+					if(markedSquares.length == 2){
+						let moveCorrect = checkMoveCorrect();
+						if(moveCorrect){
+							madeMoveCounter++;
+							updateSolutionMoveList();
+						}
+						displaySuccessOrFailure(moveCorrect);
+					}
+				}
+		}
+			//console.log("hello " + squareId);
+});
+function resetGlobalVars(){
+//	showPiecesInChessBoardFlag = false;
+//	markedSquares = [];
+//	madeMoveCounter = 0;
+}
+function exitToMenu(){
+	resetSquareHighlights();
+	resetGlobalVars();
+	hidePiecesInChessBoard();
+	removePiecesInChessBoard();
+	showMenuWindow();
+}
+
+function hideHelpPopUp(){
+	$("#help-popup").hide();
+}
+function getCounterFromLocalStorage(){
+	if (typeof(Storage) !== "undefined") {
+		let val = localStorage.getItem("counter");
+		if(isNaN(val))
+//			return Math.floor(Math.random()*100);
+			return 0;
+		else{
+			if (val != null)
+				return val;
+		}
+	} 
+	else
+		console.log("Local storage not supported");
+//	return Math.floor(Math.random()*100);
+	return 0;
+}
+function setCounterToLocalStorage(counter){
+	if (typeof(Storage) !== "undefined") {
+			localStorage.setItem("counter",counter);
+	}
+	else
+		console.log("Local storage not supported");
+}
+$(document).ready(() => {
+	puzzles.sort((a,b)=>{return (a.fen.length < b.fen.length) ? -1 : a.fen.length == b.fen.length ? 0 : 1});
+	let puzzleArr = getAllPuzzles();
+
+	/* set the default colors of colorpicker */
+	$("#colorpicker1").attr("value",colors[0]);
+	$("#colorpicker2").attr("value",colors[1]);
+
+	/* settings color picker color change events handle */
+	$("#colorpicker1").change( ()=>{
+		//console.log($("#colorpicker1")['0'].value);
+		colors[0] = $("#colorpicker1")['0'].value;
+		createChessBoard();
+	});
+
+	$("#colorpicker2").change( ()=>{
+		colors[1] = $("#colorpicker2")['0'].value;
+		createChessBoard();
+	});
+
+
+	showMenuWindow();
+	createChessBoard();
+	showPieceLocContainer();
+	hideHelpPopUp();
+	//let counter = 0;
+	let counter = getCounterFromLocalStorage();
+	console.log("counter = ",counter);
+	
+	/* Button click events */
+	$("#new-game").click( () => {
+		showGameWindow();
+		$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves[0] + "</li></ul>");
+		$("#solution-moves").show();
+		loadNextPuzzle(puzzleArr[counter]);
+	});
+	$(".exit-to-menu").click( () =>{
+		exitToMenu();
+	});
+	$("#open-settings-window").click( () =>{
+		showSettingsWindow();
+	});
+
+	$("#next-puzzle").click( () =>{
+		resetSquareHighlights();
+		counter++;
+		if(counter > puzzleArr.length - 1)
+			counter = 0;
+		console.log("counter = ",counter);
+		setCounterToLocalStorage(counter);
+		hidePiecesInChessBoard();
+		removePiecesInChessBoard();
+		showPiecesInChessBoardFlag = false;
+		loadNextPuzzle(puzzleArr[counter]);
+	});
+	$("#show-solution-button").click( ()=>{
+		showPiecesInChessBoardFlag = !showPiecesInChessBoardFlag;
+		if(showPiecesInChessBoardFlag)
+			showPiecesInChessBoard();
+		else
+			hidePiecesInChessBoard();
+	});
+	$("#help-button").click( ()=>{
+		if( $("#help-popup").is(":hidden") )
+			$("#help-popup").show();
+		else
+			$("#help-popup").hide();
+	});
+	$("#help-popup").click( ()=>{
+			$("#help-popup").hide();
+	});
+
+});
+
 puzzles = [{ fen: "2rq3r/4bk1p/p2p1p1B/1b1P2pP/3Q4/4R3/PP3P1P/4R1K1 b - - 3 22", solution: "c8c4 e3e7 d8e7 e1e7", rating:1060},
 { fen: "r3k2r/p3qppp/2pp1n2/4p3/4P1b1/1NQ5/PPPN1PPP/2KR3R b kq - 1 12", solution: "g4d1 c3c6 e7d7 c6a8", rating:1060},
 { fen: "r4rk1/3b1p1p/p2p1qp1/1ppPn3/4P3/1P3N1P/1P2QPP1/R1B1R1K1 w - - 0 21", solution: "c1g5 e5f3 e2f3 f6g5", rating:1060},
@@ -4999,429 +5418,3 @@ puzzles = [{ fen: "2rq3r/4bk1p/p2p1p1B/1b1P2pP/3Q4/4R3/PP3P1P/4R1K1 b - - 3 22",
 { fen: "5r2/p1p1N1kR/3n2p1/2q5/2P5/3Q4/PP6/1K6 b - - 0 29", solution: "g7h7 d3g6 h7h8 g6h6", rating:1320},
 { fen: "r1bq1rk1/p1p1b1pp/1p2pp2/3nP2Q/8/2NB4/PPPB1PPP/R3R1K1 b - - 1 13", solution: "g7g6 d3g6 h7g6 h5g6", rating:1320}
 ];
-let showPiecesInChessBoardFlag = false;
-let markedSquares = [];
-let solutionMoves = [];
-let madeMoveCounter = 0;
-let colors = ["#F0D9B5", "#B58863"]; // in the order [white, black]
-function hideAll(){
-	$("#menu-window").hide();
-	$("#game-window").hide();
-	$("#settings-window").hide();
-}
-
-function showMenuWindow(){
-	hideAll();
-	$("#menu-window").show();
-}
-
-function showSettingsWindow(){
-	hideAll();
-	$("#settings-window").show();
-}
-
-function showGameWindow(){
-	hideAll();
-	$("#game-window").show();
-}
-
-function deiconify(icon){
-	switch(icon){
-		case '♜':	return 'R'; 
-		case '♞':	return 'N';
-		case '♝':	return 'B';
-		case '♛':	return 'Q';
-		case '♚':	return 'K';
-		case '♟':	return 'P';
-		case '♖': return 'r';
-		case '♘': return 'n';
-		case '♗': return 'b'; 
-		case '♕': return 'q';
-		case '♔': return 'k';
-		case '♙': return 'p';
-	}
-	console.log("Error: Unrecognized icon " + icon);
-	return icon;
-}
-
-function preparePiecesInChessBoard(arr){
-	for(let i = 0; i < arr.length; i++){
-		for(let j = 0; j < arr[i].length; j++){
-			let filePathStr = "img/pieces/";
-			if((/^[A-Z]/).test(deiconify(arr[i][j].charAt(0))))
-				filePathStr += 'w';	
-			else
-				filePathStr += 'b';
-			filePathStr += deiconify(arr[i][j].charAt(0)).toLowerCase() + ".svg";
-			let imgStr = '<img src=' + filePathStr + ' alt=""' + ' id=' + arr[i][j].slice(1) + '-piece></img>';
-			//console.log(imgStr);
-			let pieceWidth = $("#chessboard").innerWidth()/10;
-			$('#'+arr[i][j].slice(1,3)).append(imgStr);
-			$('#'+arr[i][j].slice(1,3)+'-piece').css({
-				"display":"relative",
-				"width": pieceWidth,
-				"height": pieceWidth,
-			});
-			$('#'+arr[i][j].slice(1,3)+'-piece').addClass("fade-in");
-		}
-	}
-	hidePiecesInChessBoard();
-}
-
-function showPiecesInChessBoard(){
-	showPiecesInChessBoardFlag = true;
-	$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves.join("</li><li>") + "</li></ul>");
-	$("#solution-moves").show();
-	$("#chessboard").children().children().show();
-}
-function hidePiecesInChessBoard(){
-	$("#chessboard").children().children().hide();
-}
-function removePiecesInChessBoard(){
-	$("#solution-moves").hide();
-	$("#chessboard").children().children().remove();
-}
-
-function createChessBoard(){
-	$('#chessboard').css({
-		"margin": "auto"
-	});
-	const files = "abcdefgh";
-	const numFiles = 8;
-	const numRanks = 8;
-	for(let i = 0; i < numRanks; i++){
-		for(let j = 0; j < numFiles; j++){
-			let idStr = files.charAt(j)+(numFiles - i).toString();
-			let colorPref = (i+j)%2 == 0 ? colors[0] : colors[1];
-			let colorNotPref = (i+j)%2 == 0 ? colors[1] : colors[0];
-			$("#square-prototype")
-				.clone()
-				.attr("id", idStr)
-				.attr("class", "square")
-				.css({
-					"display":"flex",
-					"flex-direction":"row",
-					"align-items":"center",
-					"justify-content":"center",
-					"background-color": colorPref,
-					"min-width": $("#chessboard").innerWidth()/8,
-					"min-height": $("#chessboard").innerWidth()/8,
-					"color": colorNotPref,
-					"font-size": "12px",
-				})
-				.appendTo("#chessboard");	
-//			/* a to h coordinates marking */
-//			if(i == numRanks - 1){
-//				$("#"+idStr).html("<p><b>"+files.charAt(j)+"</b></p>");
-//			}
-//			/* 1 to 8 coordinates marking */
-//			else if(j == numFiles - 1){
-//				$("#"+idStr).html("<p><b>"+(numFiles-i).toString()+"</b></p>");
-//			}
-//			if(i == numRanks - 1 && j == numRanks - 1){
-//				$("#"+idStr).html(
-//					"<p><b>" + files.charAt(j) + "</b></p>" +
-//					"<p><b>" + (numFiles-i).toString() + "</b></p>"
-//				);
-//				$("#"+idStr).css({
-//					"justify-content":"space-between",
-//				});
-//			}
-		}
-	}
-	$("#square-prototype").remove();
-	/* round the outer edges of the chess square at the corner of the chessboard */
-	$("#h8").css("border-top-right-radius","10px");
-	$("#a8").css("border-top-left-radius","10px");
-	$("#h1").css("border-bottom-right-radius","10px");
-	$("#a1").css("border-bottom-left-radius","10px");
-}
-
-function showPieceLocContainer(){
-}
-
-function getPieceLocFromFEN(fen){
-	let locObj = {
-		white: [],
-		black: []
-	};
-
-	const mainField = fen.split(' ')[0];
-	const ranks = mainField.split('/');
-	const lowP = "rnbqkp";
-	const highP = lowP.toUpperCase();
-
-	for(let rankIdx = 8; rankIdx >= 1; rankIdx--){
-		let ranksArr = ranks[8-rankIdx].split('');
-		let fileIdx = 1;
-		for(let ranksArrIdx = 0; ranksArrIdx < ranksArr.length; ranksArrIdx++){
-			if(lowP.indexOf(ranksArr[ranksArrIdx]) >= 0){
-				locObj.black.push([fileIdx, rankIdx, ranksArr[ranksArrIdx]]);
-				fileIdx++;
-			}
-			else if(highP.indexOf(ranksArr[ranksArrIdx]) >= 0){
-				locObj.white.push([fileIdx, rankIdx, ranksArr[ranksArrIdx]]);
-				fileIdx++;
-			}
-			else
-				fileIdx += parseInt(ranksArr[ranksArrIdx]);
-		}
-	}
-	//console.log(locObj);
-	return locObj;
-}
-
-function iconify(letter){
-	switch(letter){
-		case 'R': return '♜';
-		case 'N': return '♞';
-		case 'B': return '♝';
-		case 'Q': return '♛';
-		case 'K': return '♚';
-		case 'P': return '♟';
-		case 'r': return '♖';
-		case 'n': return '♘';
-		case 'b': return '♗'; 
-		case 'q': return '♕';
-		case 'k': return '♔';
-		case 'p': return '♙';
-	}
-	console.log("Error: Unrecognized letter");
-	return letter;
-}
-
-function updatePiecesArrToBoardCoords(obj){
-	const coordMap = "abcdefgh";
-	let newArr = [ [], [] ];
-	const wLen = obj.white.length;
-	const bLen = obj.black.length;
-	for(let i = 0; i < wLen; i++){
-		let removedIdx = obj.white.shift();
-		newArr[0].push("" + iconify(removedIdx[2]) + coordMap.charAt(removedIdx[0]-1) + removedIdx[1]);
-	}
-	for(let i = 0; i < bLen; i++){
-		let removedIdx = obj.black.shift();
-		newArr[1].push("" + iconify(removedIdx[2]) + coordMap.charAt(removedIdx[0]-1) + removedIdx[1]);
-	}
-	return newArr;
-}
-
-function getWhoseMove(fen){
-	regex  = /\s[wb]\s/;
-	if(fen.match(regex) == ' b ')
-		return 'White';
-	else if(fen.match(regex) == ' w ')
-		return 'Black';
-	else{
-		console.log('Unrecognized whoseMove in getWhoseMove');
-		return '';
-	}
-}
-
-function loadNextPuzzle(puzzle){
-	madeMoveCounter = 0;
-	let piecesObj = getPieceLocFromFEN(puzzle.fen);
-	let whoseMove = getWhoseMove(puzzle.fen);
-	let piecesArr = updatePiecesArrToBoardCoords(piecesObj);
-	$("#pieces-container").css({
-		"padding" : "10px",
-	});
-	$("#white-pieces-container").css({
-		"padding-left" : "10px",
-		"padding-right": "10px",
-		"margin" : "10px",
-	});
-	$("#black-pieces-container").css({
-		"padding-left": "10px",
-		"padding-right": "10px",
-		"margin" : "10px",
-	});
-	let whiteListString = '<ul><li>' + piecesArr[0].join("</li><li>") + "</li></ul>";
-	let blackListString = '<ul><li>' + piecesArr[1].join("</li><li>") + "</li></ul>";
-	if(whoseMove == "White"){
-		$("#white-pieces-container").html("<h2>White (to move):</h2><hr><h2>" + whiteListString + "</h2>");
-		$("#black-pieces-container").html("<h2>Black:</h2><hr><h2>" + blackListString + "</h2>");
-	}
-	else if (whoseMove == "Black"){
-		$("#white-pieces-container").html("<h2>White:</h2><hr><h2>" + whiteListString + "</h2>");
-		$("#black-pieces-container").html("<h2>Black (to move):</h2><hr><h2>" + blackListString + "</h2>");
-	}
-	else{
-		$("#white-pieces-container").html("<h2>White:</h2><hr><h2>" + whiteListString + "</h2>");
-		$("#black-pieces-container").html("<h2>Black:</h2><hr><h2>" + blackListString + "</h2>");
-	}
-
-	preparePiecesInChessBoard(piecesArr);
-	hidePiecesInChessBoard();
-	solutionMoves = puzzle.solution.split(' ');
-	$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves[0] + "</li></ul>");
-	$("#solution-moves").show();
-}
-
-function getPuzzlesFromFile(){
-	return puzzles;
-}
-function getAllPuzzles(){
-	return getPuzzlesFromFile();
-}
-
-function resetSquareHighlights(){
-	//console.log(markedSquares);
-	for(let i = 0; i < markedSquares.length; i++)
-		$('#' + markedSquares[i]).css("filter","hue-rotate(0deg)");
-	markedSquares = [];
-}
-
-function checkMoveCorrect(){
-	return (markedSquares[0] === solutionMoves[madeMoveCounter*2 + 1].slice(0,2) && 
-		markedSquares[1] === solutionMoves[madeMoveCounter*2 + 1].slice(2,4));
-}
-function displaySuccessOrFailure(flag){
-	if(flag)
-		$(".temp-img-overlay").html('<img src="img/yes.svg" class="temp-img fade-in-out-fast" alt="correct answer">');
-	else
-		$(".temp-img-overlay").html('<img src="img/no.svg" class="temp-img fade-in-out-fast" alt="wrong answer">');
-	$(".temp-img-overlay").css({
-		"margin":"auto",
-		"pointer-events":"none",
-	});
-	//console.log(madeMoveCounter*2, solutionMoves.length);
-	if(madeMoveCounter*2 == solutionMoves.length){
-		showPiecesInChessBoard();
-	}
-}
-function updateSolutionMoveList(){
-	$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves.slice(0,madeMoveCounter*2+1).join('</li><li>') + "</li></ul>");
-	$("#solution-moves").show();
-}
-/* mark square upon clicking squares function */
-$(document).on("click", ".square", function(event){
-		if(!showPiecesInChessBoardFlag && (madeMoveCounter*2 != solutionMoves.length)){
-				if(markedSquares.length >= 2){
-					resetSquareHighlights();
-				}
-				let squareId = event.target.id;
-				// if square already marked, unmark it
-				if(squareId == markedSquares[0])
-					resetSquareHighlights();	
-				else{
-					markedSquares.push(squareId);
-					$("#"+squareId).css("filter","hue-rotate(45deg)");
-					
-					if(markedSquares.length == 2){
-						let moveCorrect = checkMoveCorrect();
-						if(moveCorrect){
-							madeMoveCounter++;
-							updateSolutionMoveList();
-						}
-						displaySuccessOrFailure(moveCorrect);
-					}
-				}
-		}
-			//console.log("hello " + squareId);
-});
-function resetGlobalVars(){
-//	showPiecesInChessBoardFlag = false;
-//	markedSquares = [];
-//	madeMoveCounter = 0;
-}
-function exitToMenu(){
-	resetSquareHighlights();
-	resetGlobalVars();
-	hidePiecesInChessBoard();
-	removePiecesInChessBoard();
-	showMenuWindow();
-}
-
-function hideHelpPopUp(){
-	$("#help-popup").hide();
-}
-function getCounterFromLocalStorage(){
-	if (typeof(Storage) !== "undefined") {
-		let val = localStorage.getItem("counter");
-		if(isNaN(val))
-//			return Math.floor(Math.random()*100);
-			return 0;
-		else{
-			if (val != null)
-				return val;
-		}
-	} 
-	else
-		console.log("Local storage not supported");
-//	return Math.floor(Math.random()*100);
-	return 0;
-}
-function setCounterToLocalStorage(counter){
-	if (typeof(Storage) !== "undefined") {
-			localStorage.setItem("counter",counter);
-	}
-	else
-		console.log("Local storage not supported");
-}
-$(document).ready(() => {
-	showMenuWindow();
-	createChessBoard();
-	showPieceLocContainer();
-	puzzles.sort((a,b)=>{return (a.fen.length < b.fen.length) ? -1 : a.fen.length == b.fen.length ? 0 : 1});
-	hideHelpPopUp();
-	let puzzleArr = getAllPuzzles();
-	//let counter = 0;
-	let counter = getCounterFromLocalStorage();
-	console.log("counter = ",counter);
-	
-	/* settings color picker color change events handle */
-	$("#colorpicker1").change( ()=>{
-		//console.log($("#colorpicker1")['0'].value);
-		colors[0] = $("#colorpicker1")['0'].value;
-	});
-
-	$("#colorpicker2").change( ()=>{
-		colors[1] = $("#colorpicker1")['0'].value;
-	});
-
-
-	/* Button click events */
-	$("#new-game").click( () => {
-		showGameWindow();
-		$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves[0] + "</li></ul>");
-		$("#solution-moves").show();
-		loadNextPuzzle(puzzleArr[counter]);
-	});
-	$(".exit-to-menu").click( () =>{
-		exitToMenu();
-	});
-	$("#open-settings-window").click( () =>{
-		showSettingsWindow();
-	});
-
-	$("#next-puzzle").click( () =>{
-		resetSquareHighlights();
-		counter++;
-		if(counter > puzzleArr.length - 1)
-			counter = 0;
-		console.log("counter = ",counter);
-		setCounterToLocalStorage(counter);
-		hidePiecesInChessBoard();
-		removePiecesInChessBoard();
-		showPiecesInChessBoardFlag = false;
-		loadNextPuzzle(puzzleArr[counter]);
-	});
-	$("#show-solution-button").click( ()=>{
-		showPiecesInChessBoardFlag = !showPiecesInChessBoardFlag;
-		if(showPiecesInChessBoardFlag)
-			showPiecesInChessBoard();
-		else
-			hidePiecesInChessBoard();
-	});
-	$("#help-button").click( ()=>{
-		if( $("#help-popup").is(":hidden") )
-			$("#help-popup").show();
-		else
-			$("#help-popup").hide();
-	});
-	$("#help-popup").click( ()=>{
-			$("#help-popup").hide();
-	});
-
-});
