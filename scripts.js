@@ -1,7 +1,10 @@
+cl = console.log;
+
 let showPiecesInChessBoardFlag = false;
 let markedSquares = [];
 let solutionMoves = [];
 let madeMoveCounter = 0;
+let defaultColors = ["#F0D9B5", "#B58863"];
 let colors = ["#F0D9B5", "#B58863"]; // in the order [white, black]
 function hideAll(){
 	$("#menu-window").hide();
@@ -343,17 +346,24 @@ function setCounterToLocalStorage(counter){
 	else
 		console.log("Local storage not supported");
 }
+/* set the default colors of colorpicker */
+function setDefaultColors(){
+	$("#colorpicker1").val(colors[0]);
+	$("#colorpicker2").val(colors[1]);
+}
+function resetColors(){
+	cl(colors, defaultColors);
+	colors[0] = defaultColors[0];
+	colors[1] = defaultColors[1];
+	cl(colors, defaultColors);
+	setDefaultColors();
+}
 $(document).ready(() => {
 	puzzles.sort((a,b)=>{return (a.fen.length < b.fen.length) ? -1 : a.fen.length == b.fen.length ? 0 : 1});
 	let puzzleArr = getAllPuzzles();
 
-	/* set the default colors of colorpicker */
-	$("#colorpicker1").attr("value",colors[0]);
-	$("#colorpicker2").attr("value",colors[1]);
-
 	/* settings color picker color change events handle */
 	$("#colorpicker1").change( ()=>{
-		//console.log($("#colorpicker1")['0'].value);
 		colors[0] = $("#colorpicker1")['0'].value;
 		createChessBoard();
 	});
@@ -363,7 +373,12 @@ $(document).ready(() => {
 		createChessBoard();
 	});
 
+	$("#reset-colors").click(() => {
+		resetColors();
+		createChessBoard();
+	});
 
+	setDefaultColors();
 	showMenuWindow();
 	createChessBoard();
 	showPieceLocContainer();

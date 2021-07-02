@@ -74,6 +74,46 @@ a{
 	font-family: "Niconne";
 	padding: 20px;
 }
+#settings-container{
+	display: flex;
+	flex-direction: column;
+}
+.colors-container{
+	display: flex;
+	flex-direction: row;
+}
+.pad10{
+	padding: 10px;
+}
+.round{
+	border-radius: 999px;
+}
+.none-border{
+	border: none;
+}
+.none-bg{
+	background-color: transparent;
+}
+#reset-colors:active{
+	transform: scale(1.5);
+}
+#colorpicker1:hover{
+	background-color: white;
+	transform: scale(1.5);
+}
+#colorpicker2:hover{
+	background-color: white;
+	transform: scale(1.5);
+}
+#colorpicker1:active{
+	transform: scale(1.5);
+}
+#colorpicker2:active{
+	transform: scale(1.5);
+}
+.button-bg{
+	background-color: #121212;
+}
 .custom-padding{
 	padding: 20px;
 }

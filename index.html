@@ -23,17 +23,26 @@
 <!-- ****************************************************  -->
 			<div id="settings-window">
 				<h1><u>Settings (Beta)</u></h1>
-				<h2><label for="colorpicker1">White square color:</label></h2>
-   			<input type="color" id="colorpicker1" value="#FFFFFF">
-				<h2><label for="colorpicker2">Black square color:</label></h2>
-   			<input type="color" id="colorpicker2" value="#000000">
-				<button class="exit-to-menu">
-					<img 
-						src="img/go-to-menu.svg" 
-						alt="go back icon"
-						class="reduced-size custom-padding">
-					</img>
-				</button>
+				<div id="settings-container">
+					<div class="colors-container">
+						<label for="colorpicker1" class="pad10"><h2>White square:</h2>
+   					<input type="color" id="colorpicker1" class="round none-border none-bg" value="#FFFFFF">
+						</label>
+						<label for="colorpicker2" class="pad10"><h2>Black square:</h2>
+   					<input type="color" id="colorpicker2" class="round none-border none-bg" value="#000000">
+						</label>
+					</div>
+					<button id="reset-colors" class="button-bg round-edge">
+						<h3>Reset colors</h3>
+					</button>
+					<button class="exit-to-menu">
+						<img 
+							src="img/go-to-menu.svg"
+							alt="go back icon"
+							class="reduced-size custom-padding">
+						</img>
+					</button>
+				</div>
 			</div> <!-- settings-window -->
 <!-- ****************************************************  -->
 			<div id="game-window" class="">
