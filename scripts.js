@@ -28,6 +28,8 @@ function showGameWindow(){
 }
 
 function deiconify(icon){
+	if($("#notation-checkbox").prop("checked"))
+		return icon;
 	switch(icon){
 		case '♜':	return 'R'; 
 		case '♞':	return 'N';
@@ -159,6 +161,8 @@ function getPieceLocFromFEN(fen){
 }
 
 function iconify(letter){
+	if($("#notation-checkbox").prop("checked"))
+		return letter.toUpperCase();
 	switch(letter){
 		case 'R': return '♜';
 		case 'N': return '♞';
@@ -205,11 +209,12 @@ function getWhoseMove(fen){
 	}
 }
 
-function loadNextPuzzle(puzzle){
+function loadNextPuzzle(puzzle, count){
 	madeMoveCounter = 0;
 	let piecesObj = getPieceLocFromFEN(puzzle.fen);
 	let whoseMove = getWhoseMove(puzzle.fen);
 	let piecesArr = updatePiecesArrToBoardCoords(piecesObj);
+	$("#puzzle-id").text("Puzzle #" + (parseInt(count) + 1).toString());
 	$("#pieces-container").css({
 		"padding" : "10px",
 	});
@@ -362,6 +367,14 @@ $(document).ready(() => {
 	puzzles.sort((a,b)=>{return (a.fen.length < b.fen.length) ? -1 : a.fen.length == b.fen.length ? 0 : 1});
 	let puzzleArr = getAllPuzzles();
 
+//	/* load audio */
+//	$("button").on('click', ()=>{
+//		$("#click-audio").remove();
+//		$("body").append('<audio id="click-audio" src="res/click.ogg"> </audio>');
+//		let audioElement = document.querySelector("#click-audio");
+//		audioElement.play();
+//	});
+
 	/* settings color picker color change events handle */
 	$("#colorpicker1").change( ()=>{
 		colors[0] = $("#colorpicker1")['0'].value;
@@ -392,7 +405,7 @@ $(document).ready(() => {
 		showGameWindow();
 		$("#solution-moves").html("<h2> Move List:</h2><hr><ul><li>" + solutionMoves[0] + "</li></ul>");
 		$("#solution-moves").show();
-		loadNextPuzzle(puzzleArr[counter]);
+		loadNextPuzzle(puzzleArr[counter], counter);
 	});
 	$(".exit-to-menu").click( () =>{
 		exitToMenu();
@@ -411,7 +424,7 @@ $(document).ready(() => {
 		hidePiecesInChessBoard();
 		removePiecesInChessBoard();
 		showPiecesInChessBoardFlag = false;
-		loadNextPuzzle(puzzleArr[counter]);
+		loadNextPuzzle(puzzleArr[counter], counter);
 	});
 	$("#show-solution-button").click( ()=>{
 		showPiecesInChessBoardFlag = !showPiecesInChessBoardFlag;

@@ -9,7 +9,10 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script type="text/javascript" src="scripts.js"></script>
 	</head>
+
 	<body>
+<!--		<audio id="correct-audio" src="res/correct.ogg"> </audio>
+<audio id="wrong-audio" src="res/wrong.ogg"> </audio> -->
 		<header class="card round-edge" onclick="exitToMenu()">
 			<h1><a href="#"> Blindfold Chess Trainer</a></h1>
 		</header>
@@ -35,7 +38,13 @@
 					<button id="reset-colors" class="button-bg round-edge">
 						<h3>Reset colors</h3>
 					</button>
-					<button class="exit-to-menu">
+					<div id="notation-container" class="basic-flex-row">
+						<label id="letter-notation" class="">
+							Letter_Notation
+				  	<input type="checkbox" id="notation-checkbox">
+						</label>
+					</div>
+						<button class="exit-to-menu">
 						<img 
 							src="img/go-to-menu.svg"
 							alt="go back icon"
@@ -119,6 +128,7 @@
 						<p> The user may require to play multiple moves to complete a puzzle.</p>
 						<p> The user may click on this popup to close it.</p>
 					</div> <!-- help-popup -->
+					<h2 id="puzzle-id" class="card text-align-center">Puzzle #</h2>
 					<div id="pieces-container" class="card round-edge fade-in">
 						<div id="white-pieces-container" class="card round-edge">
 						</div>
