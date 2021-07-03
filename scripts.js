@@ -398,8 +398,16 @@ $(document).ready(() => {
 	hideHelpPopUp();
 	//let counter = 0;
 	let counter = getCounterFromLocalStorage();
-	console.log("counter = ",counter);
-	
+
+	/* when random puzzles is unchecked, set the puzzle counter to the one in the local storage */
+	$("#random-puzzle-checkbox").change( () =>{
+		if($("#random-puzzle-checkbox").prop("checked"))
+			counter = Math.floor(puzzles.length * Math.random());
+		else
+			counter = getCounterFromLocalStorage();
+
+	});
+
 	/* Button click events */
 	$("#new-game").click( () => {
 		showGameWindow();
@@ -420,7 +428,11 @@ $(document).ready(() => {
 		if(counter > puzzleArr.length - 1)
 			counter = 0;
 		console.log("counter = ",counter);
-		setCounterToLocalStorage(counter);
+		if($("#random-puzzle-checkbox").prop("checked"))
+			counter = Math.floor(puzzles.length * Math.random());
+		else{
+			setCounterToLocalStorage(counter);
+		}
 		hidePiecesInChessBoard();
 		removePiecesInChessBoard();
 		showPiecesInChessBoardFlag = false;
