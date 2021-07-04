@@ -119,6 +119,16 @@ function createChessBoard(){
 		}
 	}
 	$("#square-prototype").remove();
+
+	/* attach coordinates to chessboard */
+	for(let i = 0; i < 8; i++){
+	$("#h"+(parseInt(i)+1).toString())
+			.append('<div id="coord_h' + (parseInt(i)+1).toString() +  '">' + (parseInt(i)+1).toString() + '</div>')
+	$("#coord_h"+(parseInt(i)+1).toString()).css({
+				"display": "block",
+			});
+	}
+
 	/* round the outer edges of the chess square at the corner of the chessboard */
 	$("#h8").css("border-top-right-radius","10px");
 	$("#a8").css("border-top-left-radius","10px");
